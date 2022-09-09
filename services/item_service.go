@@ -2,6 +2,7 @@ package services
 
 import (
 	"github.com/PreetSIngh8929/bookstore_items-api/domain/items"
+	"github.com/PreetSIngh8929/bookstore_items-api/domain/queries"
 	"github.com/PreetSIngh8929/boookstore_utils-go/rest_errors"
 )
 
@@ -10,16 +11,31 @@ var (
 )
 
 type itemsServiceInterface interface {
-	Create(items.Item) (*items.Item, *rest_errors.RestErr)
-	Get(string) (*items.Item, *rest_errors.RestErr)
+	Create(items.Item) (*items.Item, rest_errors.RestErr)
+	Get(string) (*items.Item, rest_errors.RestErr)
+	Search(queries.EsQuery) ([]items.Item, rest_errors.RestErr)
 }
 
 type itemsService struct {
 }
 
-func (s *itemsService) Create(items.Item) (*items.Item, *rest_errors.RestErr) {
-	return nil, rest_errors.NewBadRequestError("implement me")
+func (s *itemsService) Create(item items.Item) (*items.Item, rest_errors.RestErr) {
+	if err := item.Save(); err != nil {
+		return nil, err
+	}
+	return &item, nil
 }
-func (s *itemsService) Get(string) (*items.Item, *rest_errors.RestErr) {
-	return nil, rest_errors.NewBadRequestError("implement me")
+
+func (s *itemsService) Get(id string) (*items.Item, rest_errors.RestErr) {
+	item := items.Item{Id: id}
+
+	if err := item.Get(); err != nil {
+		return nil, err
+	}
+	return &item, nil
+}
+
+func (s *itemsService) Search(query queries.EsQuery) ([]items.Item, rest_errors.RestErr) {
+	dao := items.Item{}
+	return dao.Search(query)
 }

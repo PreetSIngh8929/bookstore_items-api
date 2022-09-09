@@ -13,5 +13,5 @@ func ResponseJson(w http.ResponseWriter, statusCode int, body interface{}) {
 	json.NewEncoder(w).Encode(body)
 }
 func ResponseError(w http.ResponseWriter, err rest_errors.RestErr) {
-	ResponseJson(w, err.Status, err)
+	ResponseJson(w, err.Status(), err)
 }
